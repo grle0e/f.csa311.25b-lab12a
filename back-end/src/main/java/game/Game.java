@@ -1,16 +1,11 @@
 package game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 enum Player {
     PLAYER0(0), PLAYER1(1);
-
     final int value;
-
-    Player(int value) {
-        this.value = value;
-    }
+    Player(int value) { this.value = value; }
 }
 
 public class Game {
@@ -32,18 +27,11 @@ public class Game {
         this.history = history;
     }
 
-    public Board getBoard() {
-        return this.board;
-    }
-
-    public Player getPlayer() {
-        return this.player;
-    }
+    public Board getBoard() { return this.board; }
+    public Player getPlayer() { return this.player; }
 
     public Game play(int x, int y) {
-        if (this.board.getCell(x, y) != null)
-            return this;
-        if (this.getWinner() != null)
+        if (this.board.getCell(x, y) != null || this.getWinner() != null)
             return this;
         List<Game> newHistory = new ArrayList<>(this.history);
         newHistory.add(this);
@@ -51,21 +39,12 @@ public class Game {
         return new Game(this.board.updateCell(x, y, this.player), nextPlayer, newHistory);
     }
 
+    public Game undo() {
+        if (this.history.isEmpty()) return this;
+        return this.history.get(this.history.size() - 1);
+    }
+
     public Player getWinner() {
-        for (int row = 0; row < 3; row++)
-            if (board.getCell(row, 0) != null && board.getCell(row, 0) == board.getCell(row, 1)
-                    && board.getCell(row, 1) == board.getCell(row, 2))
-                return board.getCell(row, 0);
-        for (int col = 0; col < 3; col++)
-            if (board.getCell(0, col) != null && board.getCell(0, col) == board.getCell(1, col)
-                    && board.getCell(0, col) == board.getCell(2, col))
-                return board.getCell(0, col);
-        if (board.getCell(1, 1) != null && board.getCell(0, 0) == board.getCell(1, 1)
-                && board.getCell(1, 1) == board.getCell(2, 2))
-            return board.getCell(1, 1);
-        if (board.getCell(1, 1) != null && board.getCell(0, 2) == board.getCell(1, 1)
-                && board.getCell(1, 1) == board.getCell(2, 0))
-            return board.getCell(1, 1);
-        return null;
+        return GameState.getWinner(this.board);
     }
 }

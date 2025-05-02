@@ -1,8 +1,7 @@
 package game;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.*;
+import java.util.stream.*;
 
 public class Board {
     private final Player[] cells;
@@ -18,6 +17,10 @@ public class Board {
 
     public Player getCell(int x, int y) {
         return this.cells[y * 3 + x];
+    }
+
+    public Player[] getCells() {
+        return this.cells;
     }
 
     public Board updateCell(int x, int y, Player player) {
